@@ -5,9 +5,10 @@ def Format_Card(card,stats):
         formated += f"has a  score of {score} in {stat}\n"
     return f"{formated}\n"
 def check_if_card_right(card,stats):
-    while easygui.buttonbox(f"Is this right?\n\n{Format_Card(stats,card)}",choices=["Y225es","No"]) != "Yes":
+    while easygui.buttonbox(f"Is this right?\n\n{Format_Card(card,stats)}",choices=["Yes","No"]) != "Yes":
         fix = easygui.buttonbox(f"which is wrong",choices=["speed","strength","cunning","stealth"])
-        card[fix] = easygui.integerbox(f"what should {stats}'s {fix} be",upperbound=25,lowerbound=0)
+        stats[fix] = easygui.integerbox(f"what should {card}'s {fix} be",upperbound=25,lowerbound=0)
+    return stats
 
 def Add_new_card():
     name = easygui.enterbox("what is the monsters name")
@@ -16,7 +17,7 @@ def Add_new_card():
     stealth = easygui.integerbox(f"what is the stealth of {name}",upperbound=25,lowerbound=0)
     cunning = easygui.integerbox(f"what is the cunning of {name}",upperbound=25,lowerbound=0)
     card = {"strength":strength,"speed":speed,"stealth":stealth,"cunning":cunning}
-    check_if_card_right(name, card)
+    card = check_if_card_right(name, card)
     cards[name] = card
 
 
