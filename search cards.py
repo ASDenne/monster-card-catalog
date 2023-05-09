@@ -10,14 +10,28 @@ def check_if_card_right(card,stats):
         stats[fix] = easygui.integerbox(f"what should {card}'s {fix} be",upperbound=25,lowerbound=0)
     return stats
 def search_for_card():
+    def check_if_card(name):
+        if easygui.buttonbox(f"are you after {name}",choices=["yes","no"]) == "yes":
+            check_if_card_right(name,card)
     query = easygui.enterbox("what card are you looking for")
     for name,card in cards.items():
-        print(card)
-        print(name)
         if query == name:
-            if easygui.choicebox(f"are you after {name}",choices=["yes","no"]) == "yes":
-                check_if_card_right(name,card)
+            check_if_card_right(name,card)
+        for mistake1 in range(1,len(query)):
+            test = query[0:mistake1] + query[(mistake1+1):]
+            if test == name:
+                check_if_card(name)
                 break
+            for mistake2 in range(1,len(name)):
+                test1 = name[0:mistake2] + name[mistake2+1:]
+                if test == test1:
+                    print(f"{test}     {test1}")
+                    check_if_card(name)
+        for mistake2 in range(1,len(name)):
+            test = name[0:mistake2] + name[mistake2+1:]
+            if query == test:
+                check_if_card(name)
+
 
 
 cards = {
@@ -32,4 +46,6 @@ cards = {
     "froststep": {"strength": 14, "speed": 14, "stealth": 17, "cunning": 4},
     "wispghoul": {"strength": 17, "speed": 19, "stealth": 3, "cunning": 2}
 }
+print(cards)
 search_for_card()
+print(cards)
