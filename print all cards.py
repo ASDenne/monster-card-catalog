@@ -8,7 +8,7 @@ def Format_Card(card,stats):
 
 def print_all_cards():
     for card,stats in  cards.items():
-        print(Format_Card(card,stats))
+        print(f"{Format_Card(card,stats)}")
 
 cards = {
     "stoneling": {"strength": 7, "speed": 1, "stealth": 25, "cunning": 15},
