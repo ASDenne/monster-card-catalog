@@ -10,11 +10,10 @@ def delete_card():
 
         if easygui.buttonbox(f"do you want to delete\n {Format_Card(name, card)}",choices=["yes", "no"]) == "yes":
             cards.pop(name)
-        global message
-        message = f"{name} deleted"
-    global message
+        easygui.msgbox(f"{name} deleted")
+
     target = easygui.enterbox("what card do you want to delete?")
-    message = f"no card called {target} found"
+
     for name,card in cards.items():
         if target == name:
             check_if_to_delete(name,card)
@@ -35,7 +34,7 @@ def delete_card():
                 if target == test:
                     check_if_to_delete(name,card)
                     break
-    easygui.msgbox(message)
+    easygui.msgbox(f"no card called {target} found")
 
 
 cards = {
