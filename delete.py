@@ -7,26 +7,35 @@ def Format_Card(card,stats):
     return f"{formated}\n"
 def delete_card():
     def check_if_to_delete(name, card):
+
         if easygui.buttonbox(f"do you want to delete\n {Format_Card(name, card)}",choices=["yes", "no"]) == "yes":
-            card.pop(name)
+            cards.pop(name)
+        global message
+        message = f"{name} deleted"
+    global message
     target = easygui.enterbox("what card do you want to delete?")
+    message = f"no card called {target} found"
     for name,card in cards.items():
         if target == name:
             check_if_to_delete(name,card)
-        for mistake1 in range(1,len(target)):
-            test = target[0:mistake1] + target[(mistake1+1):]
-            if test == name:
-                check_if_to_delete(name,card)
-                break
-            for mistake2 in range(1,len(name)):
-                test1 = name[0:mistake2] + name[mistake2+1:]
-                if test == test1:
-                    print(f"{test}     {test1}")
+            break
+        else:
+            for mistake1 in range(1,len(target)):
+                test = target[0:mistake1] + target[(mistake1+1):]
+                if test == name:
                     check_if_to_delete(name,card)
-        for mistake2 in range(1,len(name)):
-            test = name[0:mistake2] + name[mistake2+1:]
-            if target == test:
-                check_if_to_delete(name,card)
+                    break
+                for mistake2 in range(1,len(name)):
+                    test1 = name[0:mistake2] + name[mistake2+1:]
+                    if test == test1:
+                        check_if_to_delete(name,card)
+                        break
+            for mistake2 in range(1,len(name)):
+                test = name[0:mistake2] + name[mistake2+1:]
+                if target == test:
+                    check_if_to_delete(name,card)
+                    break
+    easygui.msgbox(message)
 
 
 cards = {
@@ -41,3 +50,4 @@ cards = {
     "froststep": {"strength": 14, "speed": 14, "stealth": 17, "cunning": 4},
     "wispghoul": {"strength": 17, "speed": 19, "stealth": 3, "cunning": 2}
 }
+delete_card()
