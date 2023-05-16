@@ -104,4 +104,5 @@ cards = {
     "froststep": {"strength": 14, "speed": 14, "stealth": 17, "cunning": 4},
     "wispghoul": {"strength": 17, "speed": 19, "stealth": 3, "cunning": 2}
 }
-option_control()
+while True:
+    option_control()
