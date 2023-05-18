@@ -11,26 +11,37 @@ def format_card(card, stats):
 def check_if_card_right(card, stats):
     while easygui.buttonbox(f"Is this right?\n\n{format_card(card, stats)}", choices=["Yes", "No"]) != "Yes":
         fix = easygui.buttonbox(f"which is wrong", choices=["speed", "strength", "cunning", "stealth"])
-        stats[fix] = easygui.integerbox(f"what should {card}'s {fix} be", upperbound=25, lowerbound=0)
+        stats[fix] = check_for_number(f"what should {card}'s {fix} be")
     return stats
 
 
+def check_for_string(question, title):
+    output = ""
+    while type(output) != str:
+        output = easygui.enterbox(question, title=title)
+    return output
+
+
+def check_for_number(question):
+    output = ""
+    while type(output) != int:
+        output = easygui.integerbox(question, upperbound=25, lowerbound=0)
+    return output
+
+
 def add_new_card():
-    name = easygui.enterbox("what is the monsters name")
-    strength = easygui.integerbox(f"what is the strength of {name}", upperbound=25, lowerbound=0)
-    speed = easygui.integerbox(f"what is the speed of {name}", upperbound=25, lowerbound=0)
-    stealth = easygui.integerbox(f"what is the stealth of {name}", upperbound=25, lowerbound=0)
-    cunning = easygui.integerbox(f"what is the cunning of {name}", upperbound=25, lowerbound=0)
-    card = {"strength": strength, "speed": speed, "stealth": stealth, "cunning": cunning}
-    card = check_if_card_right(name, card)
-    cards[name] = card
+    card = {}
+    name = check_for_string("what is the monsters name","add new card")
+    for stat in ["speed", "strength", "cunning", "stealth"]:
+        card[stat] = check_for_number(f"what is the {stat} of {name}")
+    cards[name] = check_if_card_right(name, card)
 
 
 def search_for_card():
     def check_if_card(check_name):
         if easygui.buttonbox(f"are you after {check_name}", choices=["yes", "no"]) == "yes":
             check_if_card_right(check_name, card)
-    query = easygui.enterbox("what card are you looking for")
+    query = check_for_string("what card are you looking for", "search for card")
     for name, card in cards.items():
         if query == name:
             check_if_card_right(name, card)
@@ -54,11 +65,9 @@ def delete_card():
     def check_if_to_delete(check_name, check_card):
         if easygui.buttonbox(f"do you want to delete\n {format_card(check_name, check_card)}", choices=["yes", "no"]) == "yes":
             cards.pop(check_name)
-        easygui.msgbox("{name} deleted")
+        easygui.msgbox(f"{name} deleted")
         option_control()
-
-    target = easygui.enterbox("what card do you want to delete?")
-
+    target = check_for_string("what card do you want to delete?", "delete card")
     for name, card in cards.items():
         if target == name:
             check_if_to_delete(name, card)
