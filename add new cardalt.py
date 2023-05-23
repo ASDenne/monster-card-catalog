@@ -37,4 +37,5 @@ cards = {
     "froststep": {"strength": 14, "speed": 14, "stealth": 17, "cunning": 4},
     "wispghoul": {"strength": 17, "speed": 19, "stealth": 3, "cunning": 2}
 }
+print(type(easygui.integerbox("exit")))
 Add_new_card()

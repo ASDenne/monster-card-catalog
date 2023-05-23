@@ -8,15 +8,8 @@ def format_card(card, stats):
     return f"{formatted}\n"
 
 
-def check_if_card_right(card, stats):
-    while easygui.buttonbox(f"Is this right?\n\n{format_card(card, stats)}", choices=["Yes", "No"]) != "Yes":
-        fix = easygui.buttonbox(f"which is wrong", choices=["speed", "strength", "cunning", "stealth"])
-        stats[fix] = check_for_number(f"what should {card}'s {fix} be")
-    return stats
-
-
 def check_for_string(question, title):
-    output = ""
+    output = 0
     while type(output) != str:
         output = easygui.enterbox(question, title=title)
     return output
@@ -29,9 +22,16 @@ def check_for_number(question):
     return output
 
 
+def check_if_card_right(card, stats):
+    while easygui.buttonbox(f"Is this right?\n\n{format_card(card, stats)}", choices=["Yes", "No"]) != "Yes":
+        fix = easygui.buttonbox(f"which is wrong", choices=["speed", "strength", "cunning", "stealth"])
+        stats[fix] = check_for_number(f"what should {card}'s {fix} be")
+    return stats
+
+
 def add_new_card():
     card = {}
-    name = check_for_string("what is the monsters name","add new card")
+    name = check_for_string("what is the monsters name", "add new card")
     for stat in ["speed", "strength", "cunning", "stealth"]:
         card[stat] = check_for_number(f"what is the {stat} of {name}")
     cards[name] = check_if_card_right(name, card)
@@ -53,7 +53,6 @@ def search_for_card():
             for mistake2 in range(1, len(name)):
                 test1 = name[0:mistake2] + name[mistake2+1:]
                 if test == test1:
-                    print(f"{test}     {test1}")
                     check_if_card(name)
         for mistake2 in range(1, len(name)):
             test = name[0:mistake2] + name[mistake2+1:]
@@ -99,6 +98,7 @@ def option_control():
     for i in range(0, len(options)):
         if action == options[i]:
             action_defs[i]()
+    option_control()
 
 
 cards = {
@@ -113,5 +113,6 @@ cards = {
     "froststep": {"strength": 14, "speed": 14, "stealth": 17, "cunning": 4},
     "wispghoul": {"strength": 17, "speed": 19, "stealth": 3, "cunning": 2}
 }
-while True:
-    option_control()
+
+
+option_control()
