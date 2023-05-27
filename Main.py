@@ -9,81 +9,87 @@ def format_card(card, stats):
 
 
 def check_for_string(question, title):
-    output = 0
-    while type(output) != str:
+    output = ""
+    while type(output) != str or output in cards or output == "":
         output = easygui.enterbox(question, title=title)
     return output
 
 
-def check_for_number(question):
-    output = ""
-    while type(output) != int:
-        output = easygui.integerbox(question, upperbound=25, lowerbound=0)
+
+def check_for_number(question, title):
+    output = easygui.integerbox(
+        question, upperbound=25, lowerbound=0, title=title)
+    if type(output) != int:
+        option_control()
     return output
 
 
 def check_if_card_right(card, stats):
-    while easygui.buttonbox(f"Is this right?\n\n{format_card(card, stats)}", choices=["Yes", "No"]) != "Yes":
-        fix = easygui.buttonbox(f"which is wrong", choices=["speed", "strength", "cunning", "stealth"])
-        stats[fix] = check_for_number(f"what should {card}'s {fix} be")
+    while easygui.buttonbox(
+            f"Are there any mistakes here?\n\n{format_card(card, stats)}",
+            choices=["Yes", "No"], title="stat checker") != "Yes":
+        fix = easygui.buttonbox(f"which is wrong?",
+                                choices=["strength","speed",
+                                         "stealth", "cunning"],
+                                title="checking which stat")
+        stats[fix] = check_for_number(
+            f"what should {card}'s {fix} be?",
+            f"checking what {card}'s {fix} should be")
     return stats
+
+
+def typo_checker(text1, text2):
+    if text1 == text2:
+        return True
+    for mistake1 in range(1, len(text1)):
+        test = text1[0:mistake1] + text1[(mistake1+1):]
+        if test == text2:
+            return True
+        for mistake2 in range(1, len(text2)):
+            test1 = text2[0:mistake2] + text2[mistake2+1:]
+            if test == test1:
+                return True
+    for mistake2 in range(1, len(text2)):
+        test = text2[0:mistake2] + text2[mistake2+1:]
+        if text1 == test:
+            return True
 
 
 def add_new_card():
     card = {}
-    name = check_for_string("what is the monsters name", "add new card")
+    name = check_for_string("what is the monsters name?", "add new card")
     for stat in ["speed", "strength", "cunning", "stealth"]:
-        card[stat] = check_for_number(f"what is the {stat} of {name}")
+        card[stat] = check_for_number(f"what is the {stat} of {name}?",
+                                      f"inputing {stat}")
     cards[name] = check_if_card_right(name, card)
 
 
 def search_for_card():
-    def check_if_card(check_name):
-        if easygui.buttonbox(f"are you after {check_name}", choices=["yes", "no"]) == "yes":
-            check_if_card_right(check_name, card)
-    query = check_for_string("what card are you looking for", "search for card")
+    query = easygui.choicebox("what card are you looking for?",
+                              "search for card")
     for name, card in cards.items():
         if query == name:
-            check_if_card_right(name, card)
-        for mistake1 in range(1, len(query)):
-            test = query[0:mistake1] + query[(mistake1+1):]
-            if test == name:
-                check_if_card(name)
-                break
-            for mistake2 in range(1, len(name)):
-                test1 = name[0:mistake2] + name[mistake2+1:]
-                if test == test1:
-                    check_if_card(name)
-        for mistake2 in range(1, len(name)):
-            test = name[0:mistake2] + name[mistake2+1:]
-            if query == test:
-                check_if_card(name)
+            if easygui.buttonbox(f"are you after {name}?",
+                                 choices=["yes", "no"]) == "yes":
+                check_if_card_right(name, card)
 
 
 def delete_card():
-    def check_if_to_delete(check_name, check_card):
-        if easygui.buttonbox(f"do you want to delete\n {format_card(check_name, check_card)}", choices=["yes", "no"]) == "yes":
-            cards.pop(check_name)
-        easygui.msgbox(f"{name} deleted")
-        option_control()
-    target = check_for_string("what card do you want to delete?", "delete card")
+    choices = []
     for name, card in cards.items():
-        if target == name:
-            check_if_to_delete(name, card)
-        else:
-            for mistake1 in range(1, len(target)):
-                test = target[0:mistake1] + target[(mistake1+1):]
-                if test == name:
-                    check_if_to_delete(name, card)
-                for mistake2 in range(1, len(name)):
-                    test1 = name[0:mistake2] + name[mistake2+1:]
-                    if test == test1:
-                        check_if_to_delete(name, card)
-            for mistake2 in range(1, len(name)):
-                test = name[0:mistake2] + name[mistake2+1:]
-                if target == test:
-                    check_if_to_delete(name, card)
-    easygui.msgbox(f"no card called {target} found")
+        choices.append(name)
+    cards.pop(easygui.choicebox("what card do you want to delete?",
+                                title="delete card", choices=choices))
+    # target = check_for_string("what card do you want to delete?",
+    #                          "delete card")
+    # for name, card in cards.items():
+    #    if typo_checker(target, name):
+    #        if easygui.buttonbox(f"do you want to delete\n "
+    #                             f"{format_card(name, card)}",
+    #                             choices=["yes", "no"]) == "yes":
+    #            cards.pop(name)
+    #            easygui.msgbox(f"{name} deleted")
+    #        option_control()
 
 
 def print_all_cards():
@@ -92,8 +98,10 @@ def print_all_cards():
 
 
 def option_control():
-    options = ["delete card", "print all cards", "search for card", "add new card", "exit"]
-    action_defs = [delete_card, print_all_cards, search_for_card, add_new_card, exit]
+    options = ["print all cards",
+               "search for card", "add new card", "delete card", "exit"]
+    action_defs = [print_all_cards,
+                   search_for_card, add_new_card, delete_card, exit]
     action = easygui.buttonbox("what are you trying to do?", choices=options)
     for i in range(0, len(options)):
         if action == options[i]:
